@@ -30,14 +30,17 @@ jobs:
       - run: |
           export SRC=gal_conj
           cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          make oneshot
           cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
       - run: |
           export SRC=lindemann
           cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          make oneshot
           cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
       - run: |
           export SRC=symmetric
           cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          make oneshot
           cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
 
       - uses: actions/upload-artifact@v3
