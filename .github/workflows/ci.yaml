@@ -12,13 +12,13 @@ jobs:
     steps:
       - run: git clone --depth 1 --recurse-submodules https://github.com/leanprover-community/mathport.git
       - run: git clone --depth 1 --recurse-submodules https://github.com/negiizhao/transcendental.git
+      - run: |
+          sudo apt-get -y update
+          sudo apt-get -y install cmake jq libgmp3-dev
       - name: Install Lean
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s - -y --default-toolchain `cat ./mathport/lean-toolchain`
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - run: |
-          sudo apt-get -y update
-          sudo apt-get -y install cmake jq gmp gmp-devel
       - run: |
           cd mathport
           lake exe cache get
