@@ -1,0 +1,46 @@
+name: Mathport Oneshot
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: git clone --depth 1 --recurse-submodules https://github.com/leanprover-community/mathport.git
+      - run: git clone --depth 1 --recurse-submodules https://github.com/negiizhao/transcendental.git
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s - -y --default-toolchain `cat ./mathport/lean-toolchain`
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - run: |
+          sudo apt-get -y update
+          sudo apt-get -y install cmake jq gmp gmp-devel
+      - run: |
+          cd mathport
+          lake exe cache get
+          make build
+          make lean3-source
+          ./download-release.sh
+      - run: |
+          mkdir out
+      - run: |
+          export SRC=gal_conj
+          cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
+      - run: |
+          export SRC=lindemann
+          cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
+      - run: |
+          export SRC=symmetric
+          cp "./transcendental/src/$SRC.lean" ./mathport/Oneshot/lean3-in/main.lean
+          cp ./mathport/Outputs/src/oneshot/Oneshot/Main.lean "./out/$SRC.lean"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: fr
+          path: out
